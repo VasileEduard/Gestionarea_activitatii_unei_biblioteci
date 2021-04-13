@@ -9,6 +9,7 @@ namespace BookWorms.Models.Admins
 {
     public class AdminBookViewModel
     {
+        public BusinessLogic.DataModel.Admin Admin { get; set; }
         public IEnumerable<Book> Books { get; set; }
     }
 }

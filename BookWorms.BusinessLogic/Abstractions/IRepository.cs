@@ -8,7 +8,7 @@ namespace BookWorms.BusinessLogic.Abstractions
     {
         IEnumerable<T> GetAll();
         T Add(T itemToAdd);
-       // T Update(T itemToUpdate);
-       // bool Delete(T itemToDelete);
+        T Update(T itemToUpdate);
+        bool Delete(T itemToDelete);
     }
 }

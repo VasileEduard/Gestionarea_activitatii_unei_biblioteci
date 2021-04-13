@@ -17,14 +17,14 @@ namespace BookWorms.BusinessLogic.Services
             this.adminRepository = adminRepository;
             this.bookRepository = bookRepository;
         }
-        public Admin GetAdminById(Guid Id)
-        {
-            if (Id == null)
-            {
-                throw new Exception("Null id");
-            }
-            return adminRepository.GetAdminById(Id);
-        }
+        //public Admin GetAdminById(Guid Id)
+        //{
+        //    if (Id == null)
+        //    {
+        //        throw new Exception("Null id");
+        //    }
+        //    return adminRepository.GetAdminById(Id);
+        //}
         public IEnumerable<Admin> GetAll()
         {
             return adminRepository.GetAll();
@@ -32,19 +32,24 @@ namespace BookWorms.BusinessLogic.Services
 
         public void AddBook(string userId, string BookDescription, string BookTitle)
         {
-            bookRepository.Add(new Book()
+            Guid userIdGuid = Guid.Empty;
+            if (!Guid.TryParse(userId, out userIdGuid))
             {
-                Id = Guid.NewGuid(),
-                BookDescription = BookDescription,
-                BookTitle = BookTitle,
-
-            });
+                throw new Exception("Invalid Guid Format");
+            }
+            var admin = adminRepository.GetAdminByUserId(userIdGuid);
+            if (admin == null)
+            {
+                throw new Exception("Null Admin");
+            }
+            bookRepository.Add(new Book() { Id = Guid.NewGuid(), Admin = admin, BookTitle = BookTitle, BookDescription = BookDescription });
         }
 
         public IEnumerable<Book> GetAllBooks()
         {
             return bookRepository.GetAll();
         }
+
         public Book GetBookById(Guid Id)
         {
             if (Id == null)
@@ -53,5 +58,50 @@ namespace BookWorms.BusinessLogic.Services
             }
             return bookRepository.GetBookById(Id);
         }
+
+
+        public IEnumerable<Book> GetAdminBooks(string userId)
+        {
+            Guid userIdGuid = Guid.Empty;
+            if (!Guid.TryParse(userId, out userIdGuid))
+            {
+                throw new Exception("Invalid Guid Format");
+            }
+
+            return bookRepository.GetAll()
+                            .Where(book => book.Admin != null && book.Admin.UserId == userIdGuid)
+                            .AsEnumerable();
+        }
+
+
+        public Admin GetAdminByUserId(string userId)
+        {
+            Guid userIdGuid = Guid.Empty;
+            if (!Guid.TryParse(userId, out userIdGuid))
+            {
+                throw new Exception("Invalid Guid Format");
+            }
+
+            var admin = adminRepository.GetAdminByUserId(userIdGuid);
+            if (admin == null)
+            {
+                throw new Exception("Null admin");
+            }
+
+            return admin;
+        }
+
+        public void DeleteBook(Guid bookId)
+        {
+            var oneBook = bookRepository.GetBookById(bookId);
+           
+            bookRepository.Delete(oneBook);
+        }
+
+        public void UpdateBook(Book books)
+        {
+            bookRepository.Update(books);
+        }
+
     }
 }

@@ -7,7 +7,7 @@ namespace BookWorms.BusinessLogic.Abstractions
 {
     public interface IAdminRepository : IRepository<Admin>
     {
-        Admin GetAdminById(Guid adminId);
+       // Admin GetAdminById(Guid adminId);
         Admin GetAdminByUserId(Guid userId);
 
     }
