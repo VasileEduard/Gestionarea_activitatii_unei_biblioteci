@@ -38,9 +38,12 @@ namespace BookWorms
                     Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+
             services.AddControllersWithViews();
             services.AddRazorPages();
+                    
             services.AddScoped<IAdminRepository, AdminRepository>();
             services.AddScoped<AdminService>();
             services.AddScoped<IBookRepository, bookRepository>();

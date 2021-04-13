@@ -30,6 +30,21 @@ namespace BookWorms.Controllers
             return View();
         }
 
+        [HttpGet]
+        public ActionResult Index()
+        {
+            try
+            {
+                var userId = userManager.GetUserId(User);
+                var admin = adminsService.GetAdminByUserId(userId);
+                var AdminBook = adminsService.GetAdminBooks(userId);
+                return View(new AdminBookViewModel { Admin = admin, Books = AdminBook });
+            }
+            catch (Exception)
+            {
+                return BadRequest("Invalid request received");
+            }
+        }
 
         [HttpPost]
         public IActionResult AddBook([FromForm] AdminAddBookViewModel model)
@@ -38,12 +53,10 @@ namespace BookWorms.Controllers
             {
                 return BadRequest();
             }
-
             try
             {
                 var userId = userManager.GetUserId(User);
                 adminsService.AddBook(userId, model.Name, model.Description);
-
                 return Redirect(Url.Action("Index", "Admin"));
             }
             catch(Exception)
@@ -53,7 +66,40 @@ namespace BookWorms.Controllers
 
         }
 
+        [HttpGet]
+        public IActionResult DeleteBook()
+        {
+            //create instance
 
-        
+            return View();
+        }
+        [HttpGet]
+        public IActionResult UpdateBook(Guid id)
+        {
+            var books = adminsService.GetBookById(id);
+
+            return View(books);
+        }
+
+
+        [HttpPost]
+        public IActionResult UpdateBook(Guid id, [FromForm] Book suggestion)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+            adminsService.UpdateBook(suggestion);
+            return Redirect(Url.Action("Index", "Admin"));
+        }
+        [HttpPost]
+        public IActionResult DeleteBook(Guid Id)
+        {
+
+            adminsService.DeleteBook(Id);
+            return Redirect(Url.Action("Index", "Admin"));
+        }
+       
+
     }
 }

@@ -24,4 +24,11 @@
     <ProjectReference Include="..\BookWorms.DataAccess\BookWorms.DataAccess.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="Views\Books\AddBook.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>
